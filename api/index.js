@@ -12,7 +12,7 @@ app.get("/", (req, res) => {
   res.send("Servidor funcionando correctamente ✅");
 });
 
-// ✅ Ruta para obtener productos
+// ✅ Obtener todos los productos (Traerá la descripción automáticamente por el *)
 app.get("/productos", (req, res) => {
   const sql = "SELECT * FROM productos";
 
@@ -25,7 +25,7 @@ app.get("/productos", (req, res) => {
   });
 });
 
-// ✅ Ruta para obtener UN solo producto por ID (DETALLE)
+// ✅ Obtener un solo producto (DETALLE)
 app.get("/productos/:id", (req, res) => {
   const { id } = req.params;
   const sql = "SELECT * FROM productos WHERE id = ?";
@@ -39,21 +39,22 @@ app.get("/productos/:id", (req, res) => {
     if (result.length === 0) {
       return res.status(404).json({ mensaje: "Producto no encontrado" });
     }
-3
-    res.json(result[0]); // ✅ devuelve un solo producto
+    res.json(result[0]); 
   });
 });
 
-// Agregar Productos
+// ✅ Agregar Productos (ACTUALIZADO CON DESCRIPCIÓN)
 app.post("/productos", (req, res) => {
-  const {nombre, precio, imagen, categoria} = req.body;
-  const sql = "INSERT INTO productos (nombre, precio, imagen, categoria) VALUES (?, ?, ?, ?)";
+  // Agregamos 'descripcion' al destructuring del body
+  const { nombre, precio, imagen, categoria, descripcion } = req.body;
+  
+  const sql = "INSERT INTO productos (nombre, precio, imagen, categoria, descripcion) VALUES (?, ?, ?, ?, ?)";
 
-  db.query(sql, [nombre, precio, imagen, categoria], (err, result) => {
+  db.query(sql, [nombre, precio, imagen, categoria, descripcion], (err, result) => {
     if (err) {
       console.log(err);
       res.status(500).send("Error al agregar el producto");
-    }else {
+    } else {
       res.json({ mensaje: "Producto agregado correctamente", id: result.insertId });
     }
   });
@@ -68,10 +69,30 @@ app.delete("/productos/:id", (req, res) => {
   });
 });
 
+// ✅ Ruta para ACTUALIZAR un producto (EDITAR)
+app.put("/productos/:id", (req, res) => {
+  const { id } = req.params;
+  const { nombre, precio, imagen, categoria, descripcion } = req.body;
+  
+  const sql = `
+    UPDATE productos 
+    SET nombre = ?, precio = ?, imagen = ?, categoria = ?, descripcion = ? 
+    WHERE id = ?
+  `;
+
+  db.query(sql, [nombre, precio, imagen, categoria, descripcion, id], (err, result) => {
+    if (err) {
+      console.log("Error al actualizar:", err);
+      res.status(500).send("Error al actualizar el producto");
+    } else {
+      res.json({ mensaje: "Producto actualizado correctamente" });
+    }
+  });
+});
+
 const PORT = 3001;
 app.listen(PORT, () => {
   console.log("Servidor corriendo en puerto " + PORT);
 });
-
 
 module.exports = app;

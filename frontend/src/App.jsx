@@ -2,19 +2,20 @@ import { useEffect, useState } from "react";
 import { Routes, Route, Link, useLocation } from "react-router-dom";
 import axios from "axios";
 import Navbar from "./components/Navbar";
+import Footer from "./components/Footer"; // ✅ Importamos el nuevo Footer
 import DetalleProducto from "./pages/DetalleProducto";
+import Login from "./pages/Login";
 import Carrito from "./pages/Carrito";
 import Admin from "./pages/Admin";
 import "./style/App.css";
 
 function App() {
   const [productos, setProductos] = useState([]);
-  const [cargando, setCargando] = useState(true); // Estado para el spinner
+  const [cargando, setCargando] = useState(true); 
   const [categoriaActiva, setCategoriaActiva] = useState("Todas");
   const [busqueda, setBusqueda] = useState("");
   const location = useLocation();
 
-  // Carga de productos con corrección de sintaxis en Axios
   useEffect(() => {
     setCargando(true); 
     axios.get("http://localhost:3001/productos")
@@ -39,7 +40,6 @@ function App() {
       <Navbar />
 
       <main className="main-content">
-        {/* Si está cargando, muestra el Spinner. Si no, muestra las Rutas */}
         {cargando ? (
           <div className="loading-container">
             <div className="spinner"></div>
@@ -53,24 +53,24 @@ function App() {
 
                 <div className="filtros-container">
                   <div className="botones-categorias">
-                    <button className="Todas"
+                    <button 
                       onClick={() => setCategoriaActiva("Todas")}
-                      style={{ backgroundColor: categoriaActiva === "Todas" ? "#ffaaf857" : "#rgba(253, 179, 225, 0.43)" }}
+                      style={{ backgroundColor: categoriaActiva === "Todas" ? "#ffaaf857" : "white" }}
                     >Todo</button>
 
                     <button
                       onClick={() => setCategoriaActiva("Reposteria")}
-                      style={{ backgroundColor: categoriaActiva === "Reposteria" ? "#ffaaf857" : "#ffffffff" }}
+                      style={{ backgroundColor: categoriaActiva === "Reposteria" ? "#ffaaf857" : "white" }}
                     >Reposteria</button>
 
                     <button 
                       onClick={() => setCategoriaActiva("Souvenirs")}
-                      style={{ backgroundColor: categoriaActiva === "Souvenirs" ? "#ffaaf857" : "#ffffffff" }}
+                      style={{ backgroundColor: categoriaActiva === "Souvenirs" ? "#ffaaf857" : "white" }}
                     >Souvenirs</button>
 
                     <button 
                       onClick={() => setCategoriaActiva("Cotillon")}
-                      style={{ backgroundColor: categoriaActiva === "Cotillon" ? "#ffaaf857" : "#ffffffff" }}
+                      style={{ backgroundColor: categoriaActiva === "Cotillon" ? "#ffaaf857" : "white" }}
                     >Cotillón</button>
                   </div>
 
@@ -107,9 +107,13 @@ function App() {
             <Route path="/producto/:id" element={<DetalleProducto />} />
             <Route path="/carrito" element={<Carrito />} />
             <Route path="/admin" element={<Admin />} />
+            <Route path="/login" element={<Login />} />
           </Routes>
         )}
       </main>
+
+      {/* ✅ Agregamos el Footer al final del layout */}
+      <Footer /> 
     </div>
   );
 }

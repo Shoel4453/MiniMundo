@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../style/App.css";
 
 function Admin() {
+    const navigate = useNavigate();
     const [subiendo, setSubiendo] = useState(false);
     const [productos, setProductos] = useState([]);
     const [editandoId, setEditandoId] = useState(null);
@@ -10,12 +12,28 @@ function Admin() {
         nombre: "",
         precio: "",
         imagen: "",
-        categoria: "Cotillon"
+        categoria: "Cotillon",
+        descripcion: "" 
     });
 
+    // Estilo común para los inputs para asegurar visibilidad
+    const inputStyle = {
+        padding: "12px",
+        borderRadius: "10px",
+        background: "#333",
+        color: "white",
+        border: "1px solid #555",
+        fontSize: "16px"
+    };
+
     useEffect(() => {
-        cargarProductos();
-    }, []);
+        const esAdmin = localStorage.getItem("admin");
+        if (esAdmin !== "true") {
+            navigate("/login");
+        } else {
+            cargarProductos();
+        }
+    }, [navigate]);
 
     const cargarProductos = () => {
         axios.get("http://localhost:3001/productos")
@@ -23,8 +41,19 @@ function Admin() {
             .catch(err => console.error(err));
     };
 
+    const cerrarSesion = () => {
+        localStorage.removeItem("admin");
+        navigate("/login");
+    };
+
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
+
+    const limpiarFormulario = () => {
+        setFormData({ nombre: "", precio: "", imagen: "", categoria: "Cotillon", descripcion: "" });
+        setEditandoId(null);
+        cargarProductos();
     };
 
     const handleFileChange = async (e) => {
@@ -51,23 +80,23 @@ function Admin() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        const pass = prompt("Contraseña de administrador:");
-        if (pass !== "1234") return alert("Acceso denegado");
-
         const url = editandoId
             ? `http://localhost:3001/productos/${editandoId}`
             : "http://localhost:3001/productos";
 
-        const metodo = editandoId ? axios.put : axios.post;
+        const peticion = editandoId 
+            ? axios.put(url, formData) 
+            : axios.post(url, formData);
 
-        metodo(url, formData)
+        peticion
             .then(() => {
                 alert(editandoId ? "¡Producto actualizado! 🔄" : "¡Producto agregado! 🎈");
-                setFormData({ nombre: "", precio: "", imagen: "", categoria: "Cotillon" });
-                setEditandoId(null);
-                cargarProductos(); 
+                limpiarFormulario();
             })
-            .catch(err => console.error(err));
+            .catch(err => {
+                console.error("Error:", err);
+                alert("Hubo un error");
+            });
     };
 
     const prepararEdicion = (p) => {
@@ -76,15 +105,13 @@ function Admin() {
             nombre: p.nombre,
             precio: p.precio,
             imagen: p.imagen,
-            categoria: p.categoria
+            categoria: p.categoria,
+            descripcion: p.descripcion || "" 
         });
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
     const eliminarProducto = (id) => {
-        const pass = prompt("Contraseña para eliminar:");
-        if (pass !== "1234") return alert("Acceso denegado");
-
         if (window.confirm("¿Seguro quieres eliminar este producto?")) {
             axios.delete(`http://localhost:3001/productos/${id}`)
                 .then(() => {
@@ -97,59 +124,87 @@ function Admin() {
 
     return (
         <div className="catalogo-container">
-            <h1 className="catalogo-title">{editandoId ? "Editar Producto" : "Panel Admin"}</h1>
+            <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "20px" }}>
+                <button onClick={cerrarSesion} style={{ backgroundColor: "#333", color: "white", fontSize: "12px", padding: "8px 15px", border: "1px solid #555" }}>
+                    Cerrar Sesión 🔒
+                </button>
+            </div>
+
+            <h1 className="catalogo-title" style={{ color: "var(--secondary-color)" }}>
+                {editandoId ? "Editar Producto" : "Panel Admin"}
+            </h1>
 
             <form onSubmit={handleSubmit} style={{ maxWidth: "500px", margin: "0 auto 50px", display: "flex", flexDirection: "column", gap: "15px" }}>
-                <input name="nombre" placeholder="Nombre" value={formData.nombre} onChange={handleChange} required />
-                <input name="precio" type="number" placeholder="Precio" value={formData.precio} onChange={handleChange} required />
+                <input 
+                    name="nombre" 
+                    placeholder="Nombre del producto" 
+                    value={formData.nombre} 
+                    onChange={handleChange} 
+                    required 
+                    style={inputStyle}
+                />
+                <input 
+                    name="precio" 
+                    type="number" 
+                    placeholder="Precio" 
+                    value={formData.precio} 
+                    onChange={handleChange} 
+                    required 
+                    style={inputStyle}
+                />
+                
+                <textarea 
+                    name="descripcion" 
+                    placeholder="Descripción del producto..." 
+                    value={formData.descripcion} 
+                    onChange={handleChange}
+                    style={{ ...inputStyle, minHeight: "100px", fontFamily: "inherit" }}
+                />
 
                 <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
                     <input type="file" id="fileInput" onChange={handleFileChange} style={{ display: "none" }} accept="image/*" />
                     <button 
                         type="button" 
                         onClick={() => document.getElementById('fileInput').click()}
-                        style={{ backgroundColor: "#444", border: "1px dashed var(--primary-color)" }}
+                        style={{ backgroundColor: "#444", border: "1px dashed #ff69b4", color: "white" }}
                         disabled={subiendo}
                     >
-                        {subiendo ? "Subiendo..." : formData.imagen ? "✅ Imagen Lista" : "📁 Seleccionar Foto desde PC"}
+                        {subiendo ? "Subiendo..." : formData.imagen ? "✅ Imagen Lista" : "📁 Seleccionar Foto"}
                     </button>
                     {formData.imagen && <img src={formData.imagen} alt="Previa" style={{ width: "80px", borderRadius: "8px", margin: "0 auto" }} />}
                 </div>
 
-                <select name="categoria" value={formData.categoria} onChange={handleChange} style={{ padding: "12px", borderRadius: "50px", background: "#1a1a1a", color: "white" }}>
+                <select name="categoria" value={formData.categoria} onChange={handleChange} style={inputStyle}>
                     <option value="Reposteria">Reposteria</option>
                     <option value="Souvenirs">Souvenirs</option>
                     <option value="Cotillon">Cotillón</option>
                 </select>
 
-                <button type="submit" style={{ backgroundColor: editandoId ? "#3498db" : "var(--primary-color)" }}>
+                <button type="submit" style={{ backgroundColor: editandoId ? "#3498db" : "#ff69b4", color: "white", fontWeight: "bold" }}>
                     {editandoId ? "Actualizar Producto" : "Guardar Nuevo"}
                 </button>
                 
                 {editandoId && (
-                    <button type="button" onClick={() => { 
-                        setEditandoId(null); 
-                        setFormData({ nombre: "", precio: "", imagen: "", categoria: "Cotillon" });
-                    }}>
+                    <button type="button" style={{backgroundColor: "#777", color: "white"}} onClick={limpiarFormulario}>
                         Cancelar Edición
                     </button>
                 )}
             </form>
 
-            <h2 style={{ textAlign: "center", marginBottom: "20px" }}>Gestión de Inventario</h2>
+            <h2 style={{ textAlign: "center", marginBottom: "20px" }}>Inventario</h2>
             <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
                 {productos.map(p => (
-                    <div key={p.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", background: "#1e1e24", padding: "15px", borderRadius: "10px" }}>
+                    <div key={p.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", background: "#1e1e24", padding: "15px", borderRadius: "10px", border: "1px solid #333" }}>
                         <div style={{ display: "flex", alignItems: "center", gap: "15px" }}>
                             <img src={p.imagen} alt="" style={{ width: "40px", height: "40px", borderRadius: "5px", objectFit: "cover" }} />
                             <div>
-                                <strong>{p.nombre}</strong> <br />
-                                <small style={{ color: "#2ecc71" }}>${p.precio}</small>
+                                <strong style={{color: "white"}}>{p.nombre}</strong> <br />
+                                <small style={{ color: "#2ecc71", fontWeight: "bold" }}>${p.precio}</small>
                             </div>
                         </div>
                         <div style={{ display: "flex", gap: "10px" }}>
-                            <button onClick={() => prepararEdicion(p)} style={{ backgroundColor: "#3498db", padding: "5px 15px", fontSize: "12px" }}>Editar</button>
-                            <button onClick={() => eliminarProducto(p.id)} style={{ backgroundColor: "#ff4444", padding: "5px 15px", fontSize: "12px" }}>Borrar</button>
+                            <button onClick={() => prepararEdicion(p)} style={{ backgroundColor: "#3498db", color: "white", padding: "5px 15px", fontSize: "12px", border: "none", borderRadius: "5px" }}>Editar</button>
+                            <button onClick={() => eliminarProducto(p.id)} style={{ backgroundColor: "#ff4444", color: "white", padding: "5px 15px", fontSize: "12px", border: "none", borderRadius: "5px" }}>Borrar</button>
                         </div>
                     </div>
                 ))}

@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { Link } from "react-router-dom";
 import { CartContext } from "./CartContext"; 
-import logo from "../assets/Logo3.png"; // Asegúrate de que la ruta sea correcta
+import logo from "../assets/Logo3.png"; 
 import "../style/Navbar.css";
 
 function Navbar() {
@@ -11,7 +11,6 @@ function Navbar() {
     <nav className="navbar">
       <div className="navbar-container">
         <Link to="/" className="navbar-logo">
-          {/* Colocamos el Logo PNG aquí */}
           <img src={logo} alt="Mini Mundo Logo" className="logo-img" />
         </Link>
         
@@ -22,10 +21,7 @@ function Navbar() {
               <span className="cart-badge">{carrito.length}</span>
             )}
           </Link>
-          
-          <Link to="/admin" className="nav-item admin-link">
-            <span className="admin-icon">⚙️</span>
-          </Link>
+          {/* El acceso admin ha sido movido al footer como punto secreto */}
         </div>
       </div>
     </nav>

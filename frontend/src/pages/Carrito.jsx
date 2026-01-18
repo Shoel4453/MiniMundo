@@ -12,15 +12,19 @@ function Carrito() {
     setCarrito(nuevoCarrito);
   };
 
-  const total = carrito.reduce((acc, producto) => acc + Number(producto.precio), 0);
+  // CORRECCIÓN: Ahora el total multiplica Precio * Cantidad
+  const total = carrito.reduce((acc, p) => acc + (Number(p.precio) * (p.cantidad || 1)), 0);
 
   const finalizarPedido = () => {
     if (carrito.length === 0) return;
     const telefono = "3482225622";
     let mensaje = "¡Hola! Quisiera realizar el siguiente pedido:\n\n";
+    
     carrito.forEach((p, index) => {
-      mensaje += `${index + 1}. *${p.nombre}* - $${p.precio}\n`;
+      // CORRECCIÓN: Se agrega la cantidad al mensaje de WhatsApp
+      mensaje += `${index + 1}. *${p.nombre}* (Cant: ${p.cantidad}) - $${p.precio * p.cantidad}\n`;
     });
+    
     mensaje += `\n *Total: $${total}*`;
     mensaje += "\n\n¿Me confirman si tienen stock?";
     const url = `https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`;
@@ -47,9 +51,12 @@ function Carrito() {
                 <div className="carrito-item-info">
                   <h3>{item.nombre}</h3>
                   <span className="categoria-tag">{item.categoria}</span>
+                  {/* AGREGADO: Muestra la cantidad elegida debajo de la categoría */}
+                  <p className="cantidad-texto">Unidades: {item.cantidad}</p>
                 </div>
                 <div className="carrito-item-precio">
-                  <span>${item.precio}</span>
+                  {/* CORRECCIÓN: Muestra el subtotal (precio x cantidad) */}
+                  <span>${item.precio * item.cantidad}</span>
                   <button className="btn-eliminar" onClick={() => eliminarProducto(index)}>
                     🗑️
                   </button>
@@ -61,7 +68,7 @@ function Carrito() {
           <div className="carrito-resumen">
             <h2>Resumen</h2>
             <div className="resumen-fila">
-              <span>Items:</span>
+              <span>Items en lista:</span>
               <span>{carrito.length}</span>
             </div>
             <div className="resumen-fila total">

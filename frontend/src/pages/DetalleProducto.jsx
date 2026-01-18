@@ -8,6 +8,7 @@ function DetalleProducto() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [producto, setProducto] = useState(null);
+  const [cantidad, setCantidad] = useState(1);
   const { agregarAlCarrito } = useContext(CartContext);
 
   useEffect(() => {
@@ -20,9 +21,7 @@ function DetalleProducto() {
 
   return (
     <div className="catalogo-container">
-      {/* Esta es la clase principal que controla el tamaño del cuadro blanco */}
       <div className="detalle-page-container">
-        
         <div className="detalle-imagen-wrapper">
           <img src={producto.imagen} alt={producto.nombre} />
         </div>
@@ -33,13 +32,18 @@ function DetalleProducto() {
           <p className="detalle-precio">${producto.precio}</p>
           
           <div className="detalle-descripcion">
-            <p>Prenda de diseño exclusivo fabricada con materiales premium. 
-               Ideal para quienes buscan estilo y durabilidad en una sola pieza.</p>
+            <p>{producto.descripcion || "Producto de alta calidad ideal para festejos y decoración."}</p>
+          </div>
+
+          <div className="selector-cantidad-detalle">
+            <button className="btn-qty" onClick={() => setCantidad(Math.max(1, cantidad - 1))}>-</button>
+            <span className="qty-value">{cantidad}</span>
+            <button className="btn-qty" onClick={() => setCantidad(cantidad + 1)}>+</button>
           </div>
 
           <div className="detalle-acciones">
-            <button className="btn-agregar-carrito" onClick={() => agregarAlCarrito(producto)}>
-              Añadir al Carrito
+            <button className="btn-agregar-carrito" onClick={() => agregarAlCarrito(producto, cantidad)}>
+              Añadir {cantidad} al Carrito
             </button>
             <button className="btn-volver-atras" onClick={() => navigate("/")}>
               Volver
