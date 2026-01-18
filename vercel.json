@@ -1,17 +1,8 @@
 {
   "version": 2,
   "rewrites": [
-    { 
-      "source": "/api/productos", 
-      "destination": "/api/productos.js" 
-    },
-    { 
-      "source": "/api/productos/:id", 
-      "destination": "/api/productos.js?id=:id" 
-    },
-    { 
-      "source": "/(.*)", 
-      "destination": "/frontend/$1" 
-    }
+    { "source": "/api/productos", "destination": "/api/productos.js" },
+    { "source": "/api/productos/:id", "destination": "/api/productos.js?id=:id" },
+    { "source": "/(.*)", "destination": "/frontend/dist/$1" }
   ]
 }
