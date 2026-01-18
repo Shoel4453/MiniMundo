@@ -1,4 +1,5 @@
 {
+  "version": 2,
   "rewrites": [
     { 
       "source": "/api/productos", 
@@ -10,10 +11,7 @@
     },
     { 
       "source": "/(.*)", 
-      "destination": "/" 
+      "destination": "/frontend/$1" 
     }
-     
-
   ]
-
 }
