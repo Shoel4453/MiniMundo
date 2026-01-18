@@ -1,4 +1,4 @@
-const pool = require("./db");
+import pool from "./db.js";
 
 export default async function handler(req, res) {
   // Capturamos el ID si viene en la URL (ej: /api/productos?id=5)
