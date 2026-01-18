@@ -1,0 +1,126 @@
+/* src/style/Navbar.css */
+
+/* Contenedor principal del Navbar */
+.navbar {
+  background-color: #fdf1f1;
+  backdrop-filter: blur(10px);
+  height: 100px; 
+  display: flex;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  width: 100vw !important; 
+  left: 0;
+  margin: 0;
+}
+
+.navbar-container {
+  width: 100%;
+  max-width: 1400px; 
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 5%;
+}
+
+/* ESTILO DEL LOGO - Aumentado */
+.navbar-logo {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+.logo-img {
+  /* Aumentamos de 60px a 90px para que se vea mucho más grande */
+  height: 120px; 
+  width: auto;
+  object-fit: contain;
+  transition: transform 0.3s ease;
+  filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.1));
+  /* Un pequeño margen para que no toque los bordes del navegador */
+  padding: 5px 0;
+}
+
+.logo-img:hover {
+  transform: scale(1.1); /* Efecto de aumento más pronunciado */
+}
+
+/* Alineación de los iconos de la derecha */
+.navbar-links {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+}
+
+/* Iconos (Carrito y Admin) */
+.nav-item {
+  color: #ccc;
+  text-decoration: none;
+  font-weight: 500;
+  transition: 0.3s;
+  font-size: 1.6rem; /* Iconos un poquito más grandes para equilibrar */
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.nav-item:hover {
+  color: #ff69b4; /* Cambiado a tu rosa secundario para combinar */
+}
+
+/* CARRITO Y BADGE */
+.cart-link {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.cart-badge {
+  position: absolute;
+  top: -5px;
+  right: -8px;
+  background-color: #ff4757;
+  color: white;
+  font-size: 0.75rem;
+  font-weight: bold;
+  min-width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #1a1a1a;
+  box-shadow: 0 0 10px rgba(255, 71, 87, 0.5);
+  animation: bounce 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Admin (Engranaje) */
+.admin-link {
+  opacity: 0.7;
+}
+
+.admin-link:hover {
+  opacity: 1;
+  transform: rotate(90deg); /* Gira más al pasar el mouse */
+}
+
+@keyframes bounce {
+  0% { transform: scale(0); }
+  80% { transform: scale(1.3); }
+  100% { transform: scale(1); }
+}
+
+/* Responsive para móviles */
+@media (max-width: 600px) {
+  .navbar {
+    height: 80px; /* Un poco más bajo en móviles */
+  }
+  .logo-img {
+    height: 70px;
+  }
+  .navbar-links {
+    gap: 15px;
+  }
+}

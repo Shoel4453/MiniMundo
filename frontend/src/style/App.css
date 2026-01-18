@@ -1,0 +1,214 @@
+/* src/style/App.css */
+
+:root {
+  --primary-color: #ffb6c1;    
+  --secondary-color: #ff69b4;  
+  --accent-color: #f1007571;     
+  --bg-light: rgba(243, 235, 235, 0.849);         
+  --card-bg: #ffffff;          
+  --text-main: #4a4a4a;        
+  --text-muted: #999999;
+}
+
+/* 1. RESET CRÍTICO: Eliminamos el fondo negro del sistema (#242424) */
+html {
+  background-color: var(--bg-light) !important; 
+  margin: 0 !important;
+  padding: 0 !important;
+  width: 100% !important;
+  overflow-x: hidden !important;
+}
+
+body, #root {
+  background-color: var(--bg-light) !important; 
+  width: 100% !important;
+  min-height: 100vh;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow-x: hidden !important; 
+  color: var(--text-main);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Poppins', 'Segoe UI', Arial, sans-serif;
+}
+
+.App {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 2. CONTENEDOR PRINCIPAL */
+.catalogo-container {
+  padding: 40px 5%; 
+  width: 100%;
+  max-width: 1400px; 
+  margin: 0 auto;
+}
+
+.catalogo-title {
+  text-align: center;
+  margin: 20px 0 30px;
+  font-size: 42px; 
+  font-weight: 800;
+  color: var(--accent-color);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-family:Georgia, 'Times New Roman', Times, serif
+}
+
+/* 3. FILTROS */
+.filtros-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 40px;
+  flex-wrap: wrap;
+  background: #fdf1f1; 
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(255, 182, 193, 0.2);
+}
+
+.botones-categorias {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+button {
+  padding: 12px 24px;
+  border: none;
+  background-color: var(--primary-color);
+  color: #ff39b373;
+  border-radius: 50px; 
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 13px;
+}
+
+.Todas{
+  color: white;
+}
+
+button:hover {
+  background-color: var(--secondary-color);
+  transform: scale(1.05);
+}
+
+input {
+  padding: 12px 20px;
+  border-radius: 50px;
+  border: 2px solid var(--primary-color);
+  background-color: #fff;
+  color: var(--text-main);
+  outline: none;
+  width: 300px;
+}
+
+/* 4. GRID: Cards pequeñas (230px) */
+.productos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); 
+  gap: 30px;
+  width: 100%;
+  margin-top: 20px;
+}
+
+/* 5. CARDS: Visibilidad corregida */
+.card {
+  background-color: var(--card-bg);
+  min-height: 380px; 
+  display: flex; 
+  flex-direction: column;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0px 10px 30px rgba(255, 182, 193, 0.15);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  text-decoration: none;
+  color: var(--text-main) !important; 
+  border: 2px solid #fdf1f1;
+}
+
+.card:hover {
+  transform: translateY(-12px);
+  border-color: var(--secondary-color);
+}
+
+.card img {
+  width: 100%;
+  height: 180px; 
+  object-fit: contain; /* Imagen completa sin recortes */
+  background-color: #fff;
+  padding: 10px;
+}
+
+.card-body {
+  padding: 20px;
+  text-align: center;
+  background-color: white; 
+}
+
+.card-body h3 {
+  font-size: 1.1rem;
+  margin-bottom: 10px;
+  color: var(--text-main);
+  display: block !important; /* Asegura visibilidad del nombre */
+}
+
+.precio {
+  font-size: 24px; 
+  font-weight: 800;
+  color: var(--accent-color);
+  margin: 5px 0;
+}
+
+.categoria {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* 6. FIX CARGADOR */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  color: var(--secondary-color);
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid white;
+  border-top: 5px solid var(--secondary-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* 7. NAVBAR FIX FINAL: Forzamos el ancho total para cubrir el fondo negro */
+.navbar {
+  width: 100vw !important; /* Usamos vw para asegurar que toque los bordes */
+  position: sticky;
+  left: 0;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
