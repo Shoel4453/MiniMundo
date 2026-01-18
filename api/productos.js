@@ -45,8 +45,11 @@ export default async function handler(req, res) {
         res.setHeader('Allow', ['GET', 'POST', 'PUT', 'DELETE']);
         return res.status(405).end(`Method ${req.method} Not Allowed`);
     }
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({ error: "Error en el servidor", detalle: error.message });
+} catch (error) {
+    console.error("Error detectado:", error);
+    return res.status(500).json({ 
+      debug_error: error.message, 
+      stack: error.code 
+    });
   }
 }
