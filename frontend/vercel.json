@@ -1,0 +1,16 @@
+{
+  "rewrites": [
+    { 
+      "source": "/api/productos", 
+      "destination": "/api/productos.js" 
+    },
+    { 
+      "source": "/api/productos/:id", 
+      "destination": "/api/productos.js?id=:id" 
+    },
+    { 
+      "source": "/(.*)", 
+      "destination": "/" 
+    }
+  ]
+}
