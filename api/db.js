@@ -8,20 +8,11 @@ const pool = mysql.createPool({
   database: process.env.DB_NAME,
   port: process.env.DB_PORT,
   ssl: {
-    minVersion: 'TLSv1.2',
-    rejectUnauthorized: true
-  },
+    rejectUnauthorized: false
+  }, // <--- Aquí faltaba cerrar esta llave
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0
-});
-
-db.connect((err) => {
-  if (err) {
-    console.log("Error en la conexión:", err);
-  } else {
-    console.log("Conectado a MySQL ✅");
-  }
 });
 
 module.exports = pool;
