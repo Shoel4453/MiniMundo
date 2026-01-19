@@ -12,7 +12,8 @@ function DetalleProducto() {
   const { agregarAlCarrito } = useContext(CartContext);
 
   useEffect(() => {
-    axios.get(`http://localhost:3001/productos/${id}`)
+    // Corregido a /api/productos?id=
+    axios.get(`/api/productos?id=${id}`)
       .then(res => setProducto(res.data))
       .catch(err => console.log("Error:", err));
   }, [id]);
@@ -25,22 +26,18 @@ function DetalleProducto() {
         <div className="detalle-imagen-wrapper">
           <img src={producto.imagen} alt={producto.nombre} />
         </div>
-
         <div className="detalle-info-wrapper">
           <span className="detalle-categoria">{producto.categoria}</span>
           <h1 className="detalle-nombre">{producto.nombre}</h1>
           <p className="detalle-precio">${producto.precio}</p>
-          
           <div className="detalle-descripcion">
             <p>{producto.descripcion || "Producto de alta calidad ideal para festejos y decoración."}</p>
           </div>
-
           <div className="selector-cantidad-detalle">
             <button className="btn-qty" onClick={() => setCantidad(Math.max(1, cantidad - 1))}>-</button>
             <span className="qty-value">{cantidad}</span>
             <button className="btn-qty" onClick={() => setCantidad(cantidad + 1)}>+</button>
           </div>
-
           <div className="detalle-acciones">
             <button className="btn-agregar-carrito" onClick={() => agregarAlCarrito(producto, cantidad)}>
               Añadir {cantidad} al Carrito
@@ -54,5 +51,4 @@ function DetalleProducto() {
     </div>
   );
 }
-
 export default DetalleProducto;

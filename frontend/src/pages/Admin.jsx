@@ -16,7 +16,6 @@ function Admin() {
         descripcion: "" 
     });
 
-    // Estilo común para los inputs para asegurar visibilidad
     const inputStyle = {
         padding: "12px",
         borderRadius: "10px",
@@ -36,7 +35,7 @@ function Admin() {
     }, [navigate]);
 
     const cargarProductos = () => {
-        axios.get("http://localhost:3001/productos")
+        axios.get("/api/productos")
             .then(res => setProductos(res.data))
             .catch(err => console.error(err));
     };
@@ -80,9 +79,10 @@ function Admin() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        // Ajustamos la URL para usar ?id= en caso de edición
         const url = editandoId
-            ? `http://localhost:3001/productos/${editandoId}`
-            : "http://localhost:3001/productos";
+            ? `/api/productos?id=${editandoId}`
+            : "/api/productos";
 
         const peticion = editandoId 
             ? axios.put(url, formData) 
@@ -113,7 +113,8 @@ function Admin() {
 
     const eliminarProducto = (id) => {
         if (window.confirm("¿Seguro quieres eliminar este producto?")) {
-            axios.delete(`http://localhost:3001/productos/${id}`)
+            // Ajustamos a /api/productos?id=
+            axios.delete(`/api/productos?id=${id}`)
                 .then(() => {
                     alert("Eliminado correctamente");
                     cargarProductos();
@@ -135,60 +136,25 @@ function Admin() {
             </h1>
 
             <form onSubmit={handleSubmit} style={{ maxWidth: "500px", margin: "0 auto 50px", display: "flex", flexDirection: "column", gap: "15px" }}>
-                <input 
-                    name="nombre" 
-                    placeholder="Nombre del producto" 
-                    value={formData.nombre} 
-                    onChange={handleChange} 
-                    required 
-                    style={inputStyle}
-                />
-                <input 
-                    name="precio" 
-                    type="number" 
-                    placeholder="Precio" 
-                    value={formData.precio} 
-                    onChange={handleChange} 
-                    required 
-                    style={inputStyle}
-                />
-                
-                <textarea 
-                    name="descripcion" 
-                    placeholder="Descripción del producto..." 
-                    value={formData.descripcion} 
-                    onChange={handleChange}
-                    style={{ ...inputStyle, minHeight: "100px", fontFamily: "inherit" }}
-                />
-
+                <input name="nombre" placeholder="Nombre del producto" value={formData.nombre} onChange={handleChange} required style={inputStyle} />
+                <input name="precio" type="number" placeholder="Precio" value={formData.precio} onChange={handleChange} required style={inputStyle} />
+                <textarea name="descripcion" placeholder="Descripción del producto..." value={formData.descripcion} onChange={handleChange} style={{ ...inputStyle, minHeight: "100px", fontFamily: "inherit" }} />
                 <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
                     <input type="file" id="fileInput" onChange={handleFileChange} style={{ display: "none" }} accept="image/*" />
-                    <button 
-                        type="button" 
-                        onClick={() => document.getElementById('fileInput').click()}
-                        style={{ backgroundColor: "#444", border: "1px dashed #ff69b4", color: "white" }}
-                        disabled={subiendo}
-                    >
+                    <button type="button" onClick={() => document.getElementById('fileInput').click()} style={{ backgroundColor: "#444", border: "1px dashed #ff69b4", color: "white" }} disabled={subiendo} >
                         {subiendo ? "Subiendo..." : formData.imagen ? "✅ Imagen Lista" : "📁 Seleccionar Foto"}
                     </button>
                     {formData.imagen && <img src={formData.imagen} alt="Previa" style={{ width: "80px", borderRadius: "8px", margin: "0 auto" }} />}
                 </div>
-
                 <select name="categoria" value={formData.categoria} onChange={handleChange} style={inputStyle}>
                     <option value="Reposteria">Reposteria</option>
                     <option value="Souvenirs">Souvenirs</option>
                     <option value="Cotillon">Cotillón</option>
                 </select>
-
                 <button type="submit" style={{ backgroundColor: editandoId ? "#3498db" : "#ff69b4", color: "white", fontWeight: "bold" }}>
                     {editandoId ? "Actualizar Producto" : "Guardar Nuevo"}
                 </button>
-                
-                {editandoId && (
-                    <button type="button" style={{backgroundColor: "#777", color: "white"}} onClick={limpiarFormulario}>
-                        Cancelar Edición
-                    </button>
-                )}
+                {editandoId && <button type="button" style={{backgroundColor: "#777", color: "white"}} onClick={limpiarFormulario}>Cancelar Edición</button>}
             </form>
 
             <h2 style={{ textAlign: "center", marginBottom: "20px" }}>Inventario</h2>
@@ -212,5 +178,4 @@ function Admin() {
         </div>
     );
 }
-
 export default Admin;

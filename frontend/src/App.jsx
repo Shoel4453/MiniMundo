@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Routes, Route, Link, useLocation } from "react-router-dom";
 import axios from "axios";
 import Navbar from "./components/Navbar";
-import Footer from "./components/Footer"; // ✅ Importamos el nuevo Footer
+import Footer from "./components/Footer";
 import DetalleProducto from "./pages/DetalleProducto";
 import Login from "./pages/Login";
 import Carrito from "./pages/Carrito";
@@ -18,7 +18,8 @@ function App() {
 
   useEffect(() => {
     setCargando(true); 
-    axios.get("http://localhost:3001/productos")
+    // Corregido a /api/productos
+    axios.get("/api/productos")
       .then(res => {
         setProductos(res.data);
         setCargando(false); 
@@ -38,7 +39,6 @@ function App() {
   return (
     <div className="app-wrapper">
       <Navbar />
-
       <main className="main-content">
         {cargando ? (
           <div className="loading-container">
@@ -50,39 +50,15 @@ function App() {
             <Route path="/" element={
               <div className="catalogo-container">
                 <h1 className="catalogo-title">Mini Mundo</h1>
-
                 <div className="filtros-container">
                   <div className="botones-categorias">
-                    <button 
-                      onClick={() => setCategoriaActiva("Todas")}
-                      style={{ backgroundColor: categoriaActiva === "Todas" ? "#ffaaf857" : "white" }}
-                    >Todo</button>
-
-                    <button
-                      onClick={() => setCategoriaActiva("Reposteria")}
-                      style={{ backgroundColor: categoriaActiva === "Reposteria" ? "#ffaaf857" : "white" }}
-                    >Reposteria</button>
-
-                    <button 
-                      onClick={() => setCategoriaActiva("Souvenirs")}
-                      style={{ backgroundColor: categoriaActiva === "Souvenirs" ? "#ffaaf857" : "white" }}
-                    >Souvenirs</button>
-
-                    <button 
-                      onClick={() => setCategoriaActiva("Cotillon")}
-                      style={{ backgroundColor: categoriaActiva === "Cotillon" ? "#ffaaf857" : "white" }}
-                    >Cotillón</button>
+                    <button onClick={() => setCategoriaActiva("Todas")} style={{ backgroundColor: categoriaActiva === "Todas" ? "#ffaaf857" : "white" }}>Todo</button>
+                    <button onClick={() => setCategoriaActiva("Reposteria")} style={{ backgroundColor: categoriaActiva === "Reposteria" ? "#ffaaf857" : "white" }}>Reposteria</button>
+                    <button onClick={() => setCategoriaActiva("Souvenirs")} style={{ backgroundColor: categoriaActiva === "Souvenirs" ? "#ffaaf857" : "white" }}>Souvenirs</button>
+                    <button onClick={() => setCategoriaActiva("Cotillon")} style={{ backgroundColor: categoriaActiva === "Cotillon" ? "#ffaaf857" : "white" }}>Cotillón</button>
                   </div>
-
-                  <input
-                    type="text"
-                    placeholder="Buscar producto..."
-                    className="buscador-input"
-                    value={busqueda}
-                    onChange={(e) => setBusqueda(e.target.value)}
-                  />
+                  <input type="text" placeholder="Buscar producto..." className="buscador-input" value={busqueda} onChange={(e) => setBusqueda(e.target.value)} />
                 </div>
-
                 <div className="productos-grid">
                   {productosFiltrados.length > 0 ? (
                     productosFiltrados.map(producto => (
@@ -96,14 +72,11 @@ function App() {
                       </Link>
                     ))
                   ) : (
-                    <p style={{ gridColumn: "1/-1", textAlign: "center", marginTop: "20px" }}>
-                      No se encontraron productos.
-                    </p>
+                    <p style={{ gridColumn: "1/-1", textAlign: "center", marginTop: "20px" }}>No se encontraron productos.</p>
                   )}
                 </div>
               </div>
             } />
-
             <Route path="/producto/:id" element={<DetalleProducto />} />
             <Route path="/carrito" element={<Carrito />} />
             <Route path="/admin" element={<Admin />} />
@@ -111,11 +84,8 @@ function App() {
           </Routes>
         )}
       </main>
-
-      {/* ✅ Agregamos el Footer al final del layout */}
       <Footer /> 
     </div>
   );
 }
-
 export default App;
